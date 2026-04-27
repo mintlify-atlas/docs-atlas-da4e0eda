@@ -1,0 +1,63 @@
+---
+title: "Performance Overlay: real-time hardware stats on-screen"
+description: "Performance Overlay shows real-time FPS, CPU, GPU, battery, and fan stats on-screen via Rivatuner Statistics Server with six display modes."
+---
+
+Performance Overlay renders a SteamOS-style heads-up display directly on your screen while you play, showing real-time metrics including frame rate, battery state, CPU and GPU utilization, memory usage, and fan speed. It uses [Rivatuner Statistics Server (RTSS)](https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html) as its on-screen display engine, so RTSS must be installed and running for the overlay to appear.
+
+<Warning>
+  Uninstall MSI Afterburner and any other OSD software before using Performance Overlay. Multiple OSD applications conflict with RTSS and will produce duplicate or broken overlays.
+</Warning>
+
+## Hotkeys
+
+Performance Overlay registers two global keyboard shortcuts that work from any application:
+
+| Shortcut | Action |
+|---|---|
+| `Shift+F11` | Toggle the overlay on or off |
+| `Alt+Shift+F11` | Cycle to the next overlay mode (and enable the overlay if it is off) |
+
+## Overlay modes
+
+Performance Overlay provides six display modes to match the level of detail you need.
+
+<Tabs>
+  <Tab title="FPS">
+    Shows only the current frame rate as a large number in the corner of the screen. The most minimal option when you only need to know how fast the game is running.
+  </Tab>
+  <Tab title="FPS with Battery">
+    Extends the FPS view with battery percentage, current draw in watts, and remaining minutes of battery life displayed alongside the frame counter.
+  </Tab>
+  <Tab title="Battery">
+    Shows battery percentage only, with no frame rate information. Useful when you want a quick power check without any game performance data.
+  </Tab>
+  <Tab title="Minimal">
+    A compact single-line bar showing battery, GPU, CPU, RAM, the active application name, and FPS — all on one row separated by dividers.
+  </Tab>
+  <Tab title="Detail">
+    Extends Minimal with per-section temperatures, frame time, fan RPM, and battery charge rate (when charging). Each hardware block expands to show utilization, power draw, and temperature.
+  </Tab>
+  <Tab title="Full">
+    A full multi-line overlay with dedicated rows for CPU (utilization, power, temperature, memory, clock speed), GPU (utilization, power, temperature, VRAM, clock speed), fan RPM, the active application with FPS and frame time, battery state, and a frame-time graph at the bottom.
+  </Tab>
+</Tabs>
+
+## Kernel driver features
+
+Some metrics in the **Detail** and **Full** modes require kernel drivers to be enabled in Performance Overlay settings:
+
+- CPU utilization (`CPU %`)
+- CPU clock speed (`CPU MHz`)
+- GPU clock speed (`GPU MHz`)
+- APU power draw (`APU W`)
+
+Without kernel drivers these values will not appear or will display as dashes. If you play anti-cheat-protected games, review the [Anti-Cheat](/anti-cheat) guide before enabling kernel drivers.
+
+## PS Remote Play
+
+When using PS Remote Play with a DualShock 4 controller, you may need to adjust RTSS configuration so that the overlay renders correctly inside the Remote Play window. Enable DS4 support in [Steam Controller](/apps/steam-controller) and configure RTSS to hook into the Remote Play process.
+
+<Note>
+  Rivatuner Statistics Server is a required dependency. Performance Overlay cannot display anything without it. See the [Installation](/installation) guide for instructions on downloading and configuring RTSS alongside Steam Deck Tools.
+</Note>

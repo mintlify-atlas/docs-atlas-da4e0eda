@@ -1,0 +1,45 @@
+---
+title: "Privacy and data collection in Steam Deck Tools"
+description: "Steam Deck Tools may connect to remote servers for crash reporting and update checks. Learn exactly what is sent and how to disable it."
+---
+
+Steam Deck Tools may connect to remote servers to report application errors and check for updates. Both of these features can be disabled with a single configuration file. This page describes exactly what data is collected, when it is sent, and how to opt out.
+
+## Error tracking (Sentry)
+
+Steam Deck Tools integrates with [Sentry.io](https://sentry.io/) to capture unhandled exceptions. This helps identify and fix bugs without requiring you to manually file a report or follow troubleshooting steps.
+
+The following information is sent to Sentry when an exception occurs:
+
+- Windows version
+- .NET Framework version
+- Exception stack trace
+- Application version
+- Type of installation
+
+Sentry is configured to not track personally identifiable information (PII). To see exactly what has been sent from your machine, open the `Documents/SteamDeckTools/Logs` folder. If the folder is empty, nothing has been sent.
+
+## Auto-update checks
+
+On each startup and every 24 hours thereafter, the applications check for a new release. As part of this check, the following information is sent:
+
+- Installation time of the application
+- Application version
+- Which Steam Deck Tools apps are installed and in use
+
+## Disabling telemetry
+
+Creating a single file in the installation folder disables both auto-update checks and error tracking.
+
+<Steps>
+  <Step title="Create the opt-out file">
+    Navigate to the root folder of your Steam Deck Tools installation and create a file named `DisableCheckForUpdates.txt`. The file can be empty — its presence is all that is required.
+  </Step>
+  <Step title="Verify the setting is active">
+    Click **Check for Updates** in any Steam Deck Tools application, or run `Updater.exe` directly. The application should display the message: `This application has explicitly disabled auto-updates`.
+  </Step>
+</Steps>
+
+<Note>
+  Disabling auto-updates also disables error tracking. Both features share the same opt-out mechanism — creating `DisableCheckForUpdates.txt` turns off all remote connectivity.
+</Note>

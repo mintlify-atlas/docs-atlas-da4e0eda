@@ -1,0 +1,53 @@
+---
+title: "Fan Control: SteamOS fan curve on Windows"
+description: "Fan Control brings SteamOS-style fan management to Windows on Steam Deck with four modes: EC Default, SteamOS curve, Silent, and Max speed."
+---
+
+Fan Control is an experimental fan controller for Windows, based on the `linux/jupiter-fan-control.py` algorithm available on SteamOS. It gives you direct control over your Steam Deck's fan behavior without booting into SteamOS, ranging from letting the embedded controller (EC) handle everything to running the full SteamOS fan curve algorithm.
+
+<Warning>
+  GPU temperature is not available on Windows. Fan Control approximates GPU thermals from CPU data because both share the same silicon die, but this is an imperfect estimate. **Your device may overheat.** Use Fan Control at your own risk.
+</Warning>
+
+## Operating modes
+
+Fan Control offers four modes. You can switch between them from the application tray icon.
+
+<Tabs>
+  <Tab title="Default">
+    The embedded controller (EC) manages the fan exactly as it does out of the box on Windows. Fan Control does not intervene. This is the stock behavior you get without any tools installed.
+  </Tab>
+  <Tab title="SteamOS">
+    Fan Control reimplements the `jupiter-fan-control.py` algorithm from SteamOS and drives the fan according to that curve. This mode requires kernel drivers to be loaded because it takes direct control of the fan hardware away from the EC.
+  </Tab>
+  <Tab title="Silent">
+    A quiet fan profile that keeps the fan at a lower speed until a configurable CPU temperature threshold is reached. You can set the temperature at which the fan ramps to 4000 RPM by adjusting `Silent4000RPMTemp` in `FanControl.dll.ini` (valid range: 70–90 °C; default: 85 °C).
+  </Tab>
+  <Tab title="Max">
+    The fan runs at full speed continuously. Useful for stress testing or for maximum cooling headroom during intensive workloads.
+  </Tab>
+</Tabs>
+
+## Requirements
+
+Fan Control requires **administrative privileges** to read temperature sensors and to issue fan control commands to the embedded controller. Launch the application as an administrator, or configure it to always run elevated via its shortcut properties.
+
+## Kernel drivers
+
+All non-Default modes — **SteamOS**, **Silent**, and **Max** — require kernel-level hardware access to take direct control of the fan from the embedded controller. Only the **Default** mode avoids loading kernel drivers.
+
+If you play online games protected by anti-cheat software, set Fan Control to **Default** before launching the game. See the [Anti-Cheat](/anti-cheat) guide for how to use Fan Control safely alongside anti-cheat-protected titles.
+
+## Configuration
+
+Silent mode exposes one configurable threshold via the `FanControl.dll.ini` file located next to the application executable:
+
+| Key | Type | Default | Range | Description |
+|---|---|---|---|---|
+| `Silent4000RPMTemp` | integer (°C) | `85` | `70`–`90` | CPU temperature at which the fan steps up to 4000 RPM in Silent mode |
+
+Edit the file with any text editor and restart Fan Control for the change to take effect.
+
+<Note>
+  Because GPU temperature sensors are unavailable on Windows, all fan curve calculations — including the SteamOS mode — use CPU and battery temperature readings only. The GPU and CPU share the same silicon, so CPU temperature is a reasonable proxy, but it is not identical to what SteamOS uses.
+</Note>

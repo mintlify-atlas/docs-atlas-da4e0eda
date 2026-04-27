@@ -1,0 +1,139 @@
+---
+title: "Steam Controller: controller emulation for all games"
+description: "Steam Controller replaces SWICD and GlosSI with native Xbox 360, DS4, and desktop emulation, including gyroscope and haptics on Windows."
+---
+
+Steam Controller is an opinionated, native implementation of Steam Deck controller emulation designed to replace [SWICD](https://github.com/mKenfenheuer/steam-deck-windows-usermode-driver/) and [GlosSI](https://github.com/Alia5/GlosSI). It emulates an Xbox 360 controller, a DualShock 4 controller, or a keyboard and mouse depending on context — automatically switching between modes as you launch games, enter Steam's Big Picture UI, or return to the desktop.
+
+## Operating modes
+
+Steam Controller operates in four modes and switches between them automatically based on what is running.
+
+<Tabs>
+  <Tab title="Desktop">
+    The Steam Deck acts as a keyboard and mouse. The right trackpad moves the cursor, the left stick and trackpad scroll, and the A/B buttons map to Enter/Backspace. This mode is active whenever no game or Steam Gamepad UI is detected.
+  </Tab>
+  <Tab title="X360">
+    The Steam Deck emulates an Xbox 360 controller (via ViGEmBus) with full haptic feedback. This mode activates automatically when you enter Playnite Fullscreen, and you can switch to it manually by holding the **Options** button. Back panel buttons (L4, L5, R4, R5) can be assigned to additional Xbox 360 buttons.
+  </Tab>
+  <Tab title="DS4">
+    The Steam Deck emulates a DualShock 4 controller, including gyroscope, accelerometer, and touchpad input. Gyro axes map directly to DS4 gyro/accelerometer channels, making this mode useful for games that support PS4 gyro aiming. DS4 mode must be enabled in Settings (`EnableDS4Support`).
+  </Tab>
+  <Tab title="Steam">
+    When Steam's Gamepad UI or Big Picture mode is active and Steam Input is handling the controller, Steam Controller steps aside and lets Steam manage the hardware directly. This mode is not selectable — it activates automatically when `SteamUsesSteamInput` is detected.
+  </Tab>
+</Tabs>
+
+## Choose a profile
+
+After launching Steam Controller, you must select one of the following profiles from the tray icon menu:
+
+<AccordionGroup>
+  <Accordion title="Use X360 Controller with Steam (recommended)">
+    Steam Controller hides the **Valve Software Steam Controller** device from Steam, preventing Steam Input from interfering. You get Desktop mode on the desktop and X360 mode in games — out of the box, with no Steam configuration required. Back panel buttons can be assigned to user-defined keys. This is the most compatible option.
+  </Accordion>
+  <Accordion title="Use Steam Input with Steam">
+    Steam Input remains active, giving you access to Steam's community controller profiles. This mode requires you to complete the [Configure Steam](#configure-steam) steps below. Steam Controller automatically disables itself when a Steam game launches and re-enables when you return to the desktop. For the best experience, keep Steam closed when not actively launching a game and use Playnite Fullscreen to manage your library. **This profile can be finicky when Steam runs in the background.**
+  </Accordion>
+  <Accordion title="Ignore Steam">
+    Steam detection is completely disabled. Steam Controller never switches to Steam mode automatically. You are responsible for managing HidHide and any other controller hiding yourself. This is an advanced option for users who have a specific setup that does not fit the other two profiles.
+  </Accordion>
+</AccordionGroup>
+
+## Requirements
+
+<Steps>
+  <Step title="Uninstall conflicting software">
+    Uninstall or disable [SWICD](https://github.com/mKenfenheuer/steam-deck-windows-usermode-driver), [GlosSI](https://github.com/Alia5/GlosSI), and [HidHide](https://github.com/ViGEm/HidHide) before running Steam Controller. Running these alongside Steam Controller causes conflicting controller inputs.
+  </Step>
+  <Step title="Verify controller visibility">
+    If you keep HidHide installed, ensure it is either disabled or configured to allow `Steam Controller.exe` to see the **Neptune Valve Controller** device. Without visibility of the physical controller, Steam Controller cannot function.
+  </Step>
+  <Step title="Install ViGEmBus">
+    Download and install the latest release of [ViGEmBus](https://github.com/ViGEm/ViGEmBus/releases). ViGEmBus is the virtual controller bus driver that Steam Controller uses to create the emulated Xbox 360 and DualShock 4 devices.
+  </Step>
+</Steps>
+
+## Configure Steam
+
+If you selected **Use Steam Input with Steam**, you must configure Steam so that its Desktop mode controller profile does not produce double inputs in non-Steam games.
+
+### Via Steam Gamepad UI (preferred)
+
+<Steps>
+  <Step title="Launch Steam in Gamepad UI">
+    Run `steam.exe` with the `-gamepadui` flag, or launch Steam normally and switch to Big Picture mode.
+  </Step>
+  <Step title="Open controller settings">
+    Press the **Steam** button, go to **Settings** > **Controller**.
+  </Step>
+  <Step title="Check the current layout">
+    If you already see **Official Layout for — SteamController provided empty configuration**, you are done.
+  </Step>
+  <Step title="Apply the empty configuration">
+    If a different layout is shown, select **New Layout**, then go to **RECOMMENDED**. Find **SteamController provided empty configuration** and select it.
+  </Step>
+</Steps>
+
+### Via Steam Desktop
+
+<Steps>
+  <Step title="Set display scale to 100%">
+    This method requires your Windows display scale to be set to exactly **100%**. At 125% the **Browse Configs** button is not clickable.
+  </Step>
+  <Step title="Open Desktop Configuration">
+    Launch Steam, go to **Steam** > **Settings** > **Controller** > **Desktop Configuration**.
+  </Step>
+  <Step title="Check the current layout">
+    If **SteamController provided empty configuration** is already shown, you are done.
+  </Step>
+  <Step title="Browse and apply">
+    Click **BROWSE CONFIGS**, go to **RECOMMENDED**, select **SteamController provided empty configuration**, click **APPLY CONFIGURATION**, then click **DONE**.
+  </Step>
+</Steps>
+
+## Fullscreen scaling hotkey
+
+Many Windows games crash when launched in fullscreen. You can use a fullscreen scaling application (such as [Lossless Scaling](https://store.steampowered.com/app/993090/Lossless_Scaling/)) together with a Steam Controller shortcut to toggle scaling with a single button press.
+
+Steam Controller maps **STEAM + DPad Up** to `Ctrl+Alt+U`. To use this with Lossless Scaling:
+
+<Steps>
+  <Step title="Open Lossless Scaling settings">
+    Launch Lossless Scaling and open **Settings**.
+  </Step>
+  <Step title="Set the scale hotkey">
+    Select **Scale hotkey** and press **STEAM + DPad Up** on the Steam Deck.
+  </Step>
+  <Step title="Verify the binding">
+    Confirm that the hotkey field shows **CTRL + ALT + U**.
+  </Step>
+  <Step title="Close settings">
+    Close the settings dialog. The hotkey is now active.
+  </Step>
+</Steps>
+
+## Switching profiles
+
+Hold the **Options** button (the three horizontal lines above the right joystick) for approximately 1 second to cycle between Desktop and X360 modes. You will hear a beep when the profile switches. You can also switch profiles from the Power Control overlay if Power Control is running alongside Steam Controller.
+
+## Uninstalling
+
+Because Steam Controller modifies Steam's controller configuration files, you must follow these steps in order to avoid leaving Steam in a broken state:
+
+<Steps>
+  <Step title="Run Steam Controller">
+    Make sure Steam Controller is running before you start the uninstall process.
+  </Step>
+  <Step title="Select a Steam-aware profile">
+    If **Ignore Steam** is currently selected, switch to **Use X360 Controller with Steam** or **Use Steam Input with Steam** first. Steam Controller needs to be in a Steam-aware profile to cleanly remove its Steam configuration.
+  </Step>
+  <Step title="Select Ignore Steam to remove Steam hooks">
+    Now select **Ignore Steam**. This removes Steam Controller's managed entries from Steam's controller configuration files.
+  </Step>
+  <Step title="Revert Steam controller settings">
+    Open Steam, go to **Steam** > **Settings** > **Controller**, and manually revert any changes to the **Desktop configuration** back to your preferred layout.
+  </Step>
+</Steps>
+
+For the complete shortcut reference, see the [Shortcuts](/guides/shortcuts) guide.

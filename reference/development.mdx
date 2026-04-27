@@ -1,0 +1,65 @@
+---
+title: "Building Steam Deck Tools from source"
+description: "Learn how to clone the Steam Deck Tools repository, build release binaries, and run a debug build using the provided batch scripts."
+---
+
+Steam Deck Tools is written in C# and targets Windows. The solution is managed through Visual Studio and a set of PowerShell-backed batch scripts that handle the full build pipeline. You can produce release binaries or run a debug build with a single command.
+
+## Prerequisites
+
+Before building, make sure you have the following installed:
+
+- **Visual Studio 2022** (or later) with the **.NET desktop development** workload, which provides the C# compiler and MSBuild toolchain
+- **.NET Framework** — the version required is specified in each project's `.csproj` file within the solution
+
+## Build
+
+To produce release binaries in the `build-release/` directory:
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/ayufan/steam-deck-tools.git
+    cd steam-deck-tools
+    ```
+  </Step>
+  <Step title="Run the build script">
+    From the repository root, run:
+    ```bat
+    scripts\build.bat
+    ```
+    This invokes `scripts\build.ps1` via PowerShell. When the build completes, the compiled binaries are placed in the `build-release/` folder.
+  </Step>
+</Steps>
+
+## Debug build
+
+To build and immediately launch the debug version of the tools:
+
+<Steps>
+  <Step title="Run the debug script">
+    From the repository root, run:
+    ```bat
+    scripts\test_debug.bat
+    ```
+    This builds the solution in debug configuration and runs the resulting binaries so you can test changes interactively.
+  </Step>
+</Steps>
+
+## Solution structure
+
+The `SteamDeckTools.sln` solution contains the following projects:
+
+| Project | Description |
+|---|---|
+| `FanControl` | Fan Control application — manages Steam Deck fan speed on Windows |
+| `PerformanceOverlay` | Performance Overlay application — displays FPS, CPU/GPU metrics, and battery stats |
+| `PowerControl` | Power Control application — adjusts TDP, CPU frequency, and GPU frequency |
+| `SteamController` | Steam Controller application — enables Steam Deck controller input for non-Steam games (e.g., Game Pass) |
+| `CommonHelpers` | Shared library — VLV0100 EC interface, `inpoutx64.dll` kernel driver wrapper, RTSS integration, and other shared utilities |
+| `ExternalHelpers` | External helper utilities used across the main applications |
+| `Updater` | Auto-update utility — checks for new releases and manages the update process |
+
+<Note>
+  The entire project is written in C# and targets Windows only. The kernel-level features depend on `inpoutx64.dll`, which is a Windows-specific driver for physical memory-mapped I/O access.
+</Note>

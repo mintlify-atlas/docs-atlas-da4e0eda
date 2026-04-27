@@ -1,0 +1,44 @@
+---
+title: "Risks: kernel memory access and hardware safety"
+description: "Steam Deck Tools directly manipulates kernel memory to control hardware. Understand the safety implications before enabling kernel-level features."
+---
+
+Steam Deck Tools performs direct manipulation of kernel memory via `inpoutx64.dll` to communicate with the EC (Embedded Controller), identified as VLV0100, and control hardware features like fan speed and TDP. This approach is powerful but carries real risks — you should understand what the software does before enabling kernel-level features.
+
+<Warning>
+  This software is provided on a best-effort basis and **can break your Steam Deck**. The memory addresses used to communicate with the EC are hardcoded from the DSDT (Differentiated System Description Table) and can change at any time with a BIOS update. Applications attempt to run only on validated hardware configurations, but you proceed at your own risk.
+</Warning>
+
+## How it works
+
+The applications interact with the Steam Deck's Embedded Controller through the VLV0100 ACPI device. Memory addresses for EC registers — such as fan speed targets, gain, ramp rate, battery temperature, and battery charge limit — are read directly from the DSDT provided by the BIOS. Access is performed via the `inpoutx64.dll` kernel driver, which allows userspace programs to read and write physical memory-mapped I/O registers.
+
+Because these addresses are derived from the DSDT rather than a stable API, they are hardcoded in the application. If Valve ships a BIOS update that relocates any of these registers, the application may read or write the wrong memory location. To mitigate this, each application validates the BIOS firmware version and board ID before enabling kernel-level features.
+
+## Fan control risk
+
+Fan control works by writing the desired RPM to EC registers (FSLO/FSHI) and toggling EC control mode via an I/O port (0x6C). This is the same mechanism used by SteamOS on Linux, which makes it the most stable of the kernel-level features. The risk of hardware damage from fan control alone is low, but incorrect memory access resulting from an unsupported BIOS version could still cause unexpected behavior.
+
+## TDP and frequency risk
+
+TDP and CPU/GPU frequency control uses a ported implementation of the AMD APU frequency management from the Linux kernel. This is inherently more unstable than fan control, because it interacts directly with the AMD display driver stack. Periodically, the AMD display driver requests GPU metrics; in rare circumstances, a frequency change request during this window can lock up the GPU driver.
+
+If the GPU driver locks up, follow the recovery steps below — this is unlikely to cause permanent hardware damage if you act promptly.
+
+## Validated configurations
+
+Before enabling any kernel-level feature, each application reads the firmware version (`PDFV` register), board ID (`XBID` register), and PD control state (`PDCT` register) from the EC. These values are compared against a list of known-good configurations. If the running BIOS does not match a validated entry, the application refuses to load kernel drivers. This check exists specifically to prevent memory access at incorrect addresses on untested hardware.
+
+## Recovery
+
+If the GPU driver locks up after a frequency change:
+
+1. Disconnect the charging cable from your Steam Deck.
+2. Hold the power button for a few seconds until the device powers off.
+3. Power the device on normally.
+
+This procedure clears the GPU driver state and is unlikely to cause permanent damage when performed immediately after the lockup occurs.
+
+<Note>
+  Many users run Steam Deck Tools without any issues. The risks described here are real but uncommon in practice, particularly on validated configurations. Proceed with awareness, and avoid enabling kernel-level features while playing online games with anti-cheat software.
+</Note>

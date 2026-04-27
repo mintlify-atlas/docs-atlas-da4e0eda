@@ -1,0 +1,90 @@
+---
+title: "Troubleshooting Steam Deck Tools crashes and errors"
+description: "Diagnose and fix crashes, startup failures, and common errors in Fan Control, Performance Overlay, Power Control, and Steam Controller on Windows."
+---
+
+Any of the Steam Deck Tools applications can crash or fail to start. Most problems fall into a small set of categories: missing dependencies, missing privileges, or conflicts with other software. This page walks you through how to gather diagnostic information and addresses the most frequent issues.
+
+## First steps
+
+<Steps>
+  <Step title="Verify all dependencies are installed">
+    Many failures are caused by a missing runtime or driver component. Check the [installation guide](/installation) and confirm every listed dependency is present before investigating further.
+  </Step>
+  <Step title="Restart with administrator privileges">
+    Fan Control and certain Power Control features require kernel-level access. Right-click the application shortcut and choose **Run as administrator**, then check whether the problem persists.
+  </Step>
+  <Step title="Check Windows Event Viewer for .NET Runtime errors">
+    If the application crashes silently, Windows logs the exception to Event Viewer. Follow the steps in the next section to retrieve the error details.
+  </Step>
+</Steps>
+
+## Reading Event Viewer logs
+
+<Steps>
+  <Step title="Open Event Viewer">
+    Press **Win + S**, type `Event Viewer`, and open it.
+  </Step>
+  <Step title="Navigate to Custom Events">
+    In the left panel, expand **Custom Views** and select **Administrative Events**.
+  </Step>
+  <Step title="Find recent .NET Runtime entries">
+    Look for entries with **Source** set to **.NET Runtime** that appeared around the time of the crash.
+  </Step>
+  <Step title="Identify the affected application">
+    Open the event details and look for the **Application** field. Steam Deck Tools errors will list one of:
+    - `FanControl.exe`
+    - `PerformanceOverlay.exe`
+    - `PowerControl.exe`
+    - `SteamController.exe`
+  </Step>
+  <Step title="Report the issue on GitHub">
+    Copy the full exception text from the event details and open an issue on [GitHub](https://github.com/ayufan-research/steam-deck-tools/) with a description of what you were doing when the crash occurred and the exception you copied.
+  </Step>
+</Steps>
+
+## PS Remote Play flickering
+
+Steam Deck Tools supports PS Remote Play natively through DS4 emulation. However, the RTSS on-screen display can flicker when DS4 support is active. To fix the flickering, open RTSS and configure its settings to match exactly the values shown in the project documentation's reference screenshot. Incorrect RTSS settings are the sole cause of this flickering; no other configuration change is needed.
+
+## Anti-cheat or antivirus blocking
+
+Some anti-cheat systems and antivirus tools flag Steam Deck Tools components because they use low-level kernel access for fan control and TDP management. See the [anti-cheat guide](/anti-cheat) for a full explanation of what each component does and how to add the necessary exclusions.
+
+## Common issues
+
+<AccordionGroup>
+  <Accordion title="Fan Control won't start">
+    Fan Control requires **administrator privileges** to access the embedded controller (EC). Launch it by right-clicking and choosing **Run as administrator**.
+
+    Fan Control also depends on `inpoutx64.dll` for direct EC hardware access. If this file is missing or blocked by your antivirus, Fan Control cannot read or write fan curves. Ensure the DLL is present in the same directory as `FanControl.exe` and is not quarantined.
+  </Accordion>
+
+  <Accordion title="Performance Overlay not showing">
+    Performance Overlay uses **Rivatuner Statistics Server (RTSS)** to render the on-screen display. If RTSS is not installed and running, no overlay will appear.
+
+    If RTSS is installed but the overlay still does not show, check whether **MSI Afterburner** is also installed. Afterburner conflicts with standalone RTSS usage. Uninstall MSI Afterburner and restart RTSS.
+  </Accordion>
+
+  <Accordion title="Steam Controller not detected">
+    Steam Controller requires exclusive access to the Neptune Valve Controller device. Check the following:
+
+    - **SWICD, GlosSI, or HidHide** must not be running or must be configured to release the device. These tools intercept the controller before Steam Controller can see it.
+    - **ViGEmBus** must be installed. Steam Controller uses it to create virtual X360 and DS4 devices. Without it, no emulated controller will appear.
+    - The `Steam Controller.exe` process must be able to see the **Neptune Valve Controller** in the device list. If the device does not appear in Device Manager, check your USB/Bluetooth drivers.
+  </Accordion>
+
+  <Accordion title="Power Control overlay not appearing">
+    Power Control's OSD mode only works **while a game or application is actively rendering graphics**. If you are on the Windows desktop or in a non-rendering context, the overlay cannot attach to a render target and will not appear.
+
+    Use **notification mode** instead when you need to adjust settings outside of a game. Notification mode is always available regardless of what is on screen.
+  </Accordion>
+
+  <Accordion title="Application uses wrong fan curve">
+    GPU temperature is not directly readable on Windows the same way it is on SteamOS. When running in SteamOS compatibility mode, the fan curve is an approximation based on available sensor data. If the fan behavior seems incorrect, this is a known limitation — GPU temperature unavailability on Windows means the SteamOS fan curve mode can only estimate the correct response.
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  Steam Deck Tools also writes Sentry diagnostic logs to `Documents\SteamDeckTools\Logs`. If you are asked to provide logs when filing a bug report, you will find them there.
+</Note>

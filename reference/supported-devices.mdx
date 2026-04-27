@@ -1,0 +1,51 @@
+---
+title: "Supported Steam Deck models and BIOS versions"
+description: "Steam Deck Tools validates your hardware before enabling kernel features. See which LCD and OLED models and firmware versions are supported."
+---
+
+Steam Deck Tools reads EC registers at memory addresses that are hardcoded from the BIOS DSDT. Because these addresses can change between firmware versions, each application checks your firmware version and board ID before enabling any kernel-level feature. If the running configuration is not on the validated list, the application refuses to load kernel drivers — this prevents accidental memory access at incorrect addresses on untested hardware.
+
+## Steam Deck LCD
+
+The following firmware versions are validated for the Steam Deck LCD model (PD firmware version `0xB030`, board IDs `0x6` and `0xA`):
+
+| BIOS Version | PD Version |
+|---|---|
+| F7A0107 | 0xB030 |
+| F7A0110 | 0xB030 |
+| F7A0113 | 0xB030 |
+| F7A0115 | 0xB030 |
+| F7A0116 | 0xB030 |
+| F7A0119 | 0xB030 |
+
+## Steam Deck OLED
+
+The following firmware version is validated for the Steam Deck OLED model (PD firmware version `0x1050`, board ID `0x5`):
+
+| BIOS Version | PD Version |
+|---|---|
+| F7G0107 | 0x1050 |
+
+## Feature differences
+
+The LCD and OLED models expose different capabilities through the EC:
+
+| Feature | Steam Deck LCD | Steam Deck OLED |
+|---|---|---|
+| Fan control | Yes | Yes |
+| Battery temperature | Yes (big-endian byte order) | Yes (little-endian byte order) |
+| Max battery charge limit | Board ID `0xA` only | Yes |
+
+The battery temperature byte order differs between models: LCD uses big-endian (`data[0] << 8 + data[1]`), while OLED uses little-endian (`data[1] << 8 + data[0]`). The max battery charge limit feature (`MCBL` register) is available on OLED and on LCD board ID `0xA`, but not on the original LCD board ID `0x6`.
+
+## Unsupported devices
+
+If the application detects a BIOS version or board ID that does not match any entry in the validated list, it will refuse to enable kernel-level features for that session. You can still use Steam Deck Tools in a limited capacity — for example, the Performance Overlay can display stats without kernel drivers — but features that require direct EC access (fan control, TDP adjustment, frequency changes, battery charge limit) will be unavailable.
+
+<Note>
+  A BIOS update from Valve can relocate EC register addresses without warning, which would make a previously supported firmware version unsafe to use. If a new BIOS breaks support, the application will also refuse to run kernel-level features on that version until it is re-validated.
+</Note>
+
+<Tip>
+  After Valve releases a new BIOS, check the [GitHub releases page](https://github.com/ayufan/steam-deck-tools/releases) for an updated version of Steam Deck Tools with support for the new firmware added to the validated list.
+</Tip>

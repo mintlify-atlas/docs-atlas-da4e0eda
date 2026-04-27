@@ -1,0 +1,73 @@
+{
+  "projectType": "saas",
+  "projectName": "Steam Deck Tools",
+  "projectDescription": "A suite of Windows applications for Steam Deck that provides fan control, performance overlay, power/TDP management, and Steam controller emulation.",
+  "theme": "almond",
+  "primaryColor": "#1a9fff",
+  "lightColor": "#e8f4ff",
+  "darkColor": "#0d5fa6",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "anti-cheat"
+            ]
+          },
+          {
+            "group": "Applications",
+            "pages": [
+              "apps/fan-control",
+              "apps/performance-overlay",
+              "apps/power-control",
+              "apps/steam-controller"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/shortcuts",
+              "guides/profiles",
+              "guides/troubleshooting"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/risks",
+              "reference/privacy",
+              "reference/supported-devices",
+              "reference/development"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Fan Control with SteamOS-based curve reimplementation and EC manipulation",
+    "Performance Overlay with FPS, CPU, GPU, battery, and APU power metrics",
+    "Power Control for TDP, refresh rate, resolution, FPS limit, brightness, and volume",
+    "Steam Controller emulation supporting Desktop, X360, DS4, and Steam modes",
+    "Battery charge limit control (70%/80%/90%/100%) for OLED and LCD models",
+    "SMT (Simultaneous Multi-Threading) toggle per-game via AMD APU",
+    "Anti-cheat awareness with kernel-feature opt-in acknowledgement",
+    "Auto-update and Sentry error tracking with privacy controls"
+  ],
+  "publicApiSurface": [
+    "FanControl.exe — Fan Control application",
+    "PerformanceOverlay.exe — Performance Overlay application",
+    "PowerControl.exe — Power Control application",
+    "SteamController.exe — Steam Controller emulation application",
+    "Updater.exe — Auto-updater utility",
+    "SteamDeckTools-<version>-setup.exe — Installer",
+    "DisableCheckForUpdates.txt — Opt-out file for telemetry and auto-updates",
+    "VLV0100 EC interface (kernel-level fan/battery access)",
+    "VangoghGPU TDP/frequency interface (AMD APU control)"
+  ]
+}

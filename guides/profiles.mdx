@@ -1,0 +1,82 @@
+---
+title: "Power Control profiles: save and restore settings"
+description: "Learn how Power Control automatically saves and restores per-game settings like TDP, refresh rate, FPS limit, and more using process-based profiles."
+---
+
+Power Control supports per-process profiles that automatically apply saved settings when a game or application comes to the foreground and restore your previous values when you leave it. This lets you maintain different configurations — for example, a conservative TDP for a battery-friendly indie game and a higher TDP for a demanding title — without manually adjusting settings each time.
+
+## How profiles work
+
+Profiles in Power Control are tied to the **executable name** of the foreground process, not to a title you name yourself. When Power Control detects a new foreground application, it looks for a saved profile file matching that process name. If one exists, Power Control applies the saved settings after a short delay (500 ms by default). When you switch away from that application and no other watched processes remain, Power Control reverts all changed settings to the values they had before the profile was applied.
+
+Profile files are stored as INI files inside a `GameProfiles/` folder next to the Power Control executable:
+
+```
+GameProfiles/
+  PowerControl.Process.game.exe.ini
+  PowerControl.Process.anotherapp.exe.ini
+```
+
+## What profiles save
+
+Each profile stores the values for any menu option that has a persistent key. The settings that can be saved per profile are:
+
+| Setting | Description |
+|---|---|
+| **TDP** | Slow and fast TDP limits in watts |
+| **Refresh Rate** | Display refresh rate in Hz |
+| **FPS Limit** | Frame rate cap (via RTSS) |
+| **SMT** | Whether the second CPU thread per core is enabled for the process |
+| **Resolution** | Display resolution (requires `EnableExperimentalFeatures`) |
+| **GPU Frequency** | GPU clock frequency |
+| **GPU Scaling** | GPU scaling mode |
+| **GPU Colors** | GPU color settings |
+| **CPU Frequency** | CPU clock frequency |
+| **Fan Mode** | Fan control mode (requires Fan Control running) |
+| **Performance Overlay** | Whether the overlay is shown |
+| **Performance Overlay Mode** | OSD display mode |
+| **Steam Controller** | Steam Controller mode |
+
+Settings that are not listed above (such as **Volume** and **Brightness**) are not saved per profile and remain unchanged when switching profiles.
+
+## Accessing profiles
+
+You access profile management through the **Profiles** entry in the Power Control overlay. The options available depend on whether a profile already exists for the current foreground application:
+
+- **No existing profile**: the menu shows **None**, **Create New**, and **Save All**.
+  - **Create New** — creates a profile file for the current process without saving any current settings.
+  - **Save All** — creates a profile and immediately saves all current settings into it.
+- **Existing profile**: the menu shows the profile name, **Save All**, and **Delete**.
+  - **Save All** — overwrites the profile with all current settings.
+  - **Delete** — removes the profile file. Settings will no longer be restored for this application.
+
+Once a profile exists, any setting you change while that application is in the foreground is automatically written back to the profile. You do not need to use **Save All** for incremental changes.
+
+## Default profile
+
+There is no global "default" profile. When no foreground application has an active profile, Power Control shows the values as they were before any profile was applied. If you change settings while no profile is active, those values are treated as the baseline to restore to when the next profile is removed.
+
+To reset TDP, refresh rate, and FPS limit to their defaults manually, press **3 dots + L4 + R4 + L5 + R5** on the Steam Deck controller.
+
+## Creating custom TDP options
+
+The TDP options available in the Power Control menu (3 W through 15 W by default) are stored in user settings under `TDPOptions`. You can edit the `TDPOptions` settings file to add, remove, or rename TDP steps. Each option stores a `SlowTDP` and `FastTDP` value in milliwatts.
+
+The default options are:
+
+| Label | Slow TDP | Fast TDP |
+|---|---|---|
+| 3W | 3,000 mW | 3,000 mW |
+| 4W | 4,000 mW | 4,000 mW |
+| 5W | 5,000 mW | 5,000 mW |
+| 6W | 6,000 mW | 6,000 mW |
+| 7W | 7,000 mW | 7,000 mW |
+| 8W | 8,000 mW | 8,000 mW |
+| 9W | 9,000 mW | 9,000 mW |
+| 10W | 10,000 mW | 10,000 mW |
+| 12W | 12,000 mW | 12,000 mW |
+| 15W | 15,000 mW | 15,000 mW |
+
+<Tip>
+  A common setup is to create a **battery saver profile** at 5–7 W for less demanding games or apps, and a **gaming profile** at 12–15 W for titles that need the full headroom. Pair each with a matching refresh rate (40 Hz at low TDP, 60 Hz at high TDP) for a noticeable improvement in battery life.
+</Tip>

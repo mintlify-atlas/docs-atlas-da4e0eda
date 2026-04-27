@@ -1,0 +1,77 @@
+---
+title: "Get started with Steam Deck Tools on Windows"
+description: "Install Steam Deck Tools on Windows: set up Visual C++ Redistributable, RTSS, and ViGEmBus first, then run the setup wizard to install all four apps."
+---
+
+Installing Steam Deck Tools takes a few minutes. The installer handles the four apps (Fan Control, Performance Overlay, Power Control, and Steam Controller) in one pass, but you need to install three third-party dependencies first. If you skip the dependencies, the apps will prompt you at launch and refuse to start until they are satisfied.
+
+<Steps>
+  <Step title="Download the installer from GitHub Releases">
+    Go to the [latest GitHub release](https://github.com/ayufan/steam-deck-tools/releases/latest) and download `SteamDeckTools-<version>-setup.exe`. The release page also lists any beta builds if you want to test pre-release features.
+  </Step>
+
+  <Step title="Install Microsoft Visual C++ Redistributable">
+    Steam Deck Tools requires the Visual C++ 2017 or later runtime. Download and run the installer from Microsoft:
+
+    [https://aka.ms/vs/17/release/vc_redist.x64.exe](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+
+    If you already have a recent Visual C++ Redistributable installed you can skip this step — the setup wizard checks for `vcruntime140.dll` automatically.
+  </Step>
+
+  <Step title="Install Rivatuner Statistics Server (RTSS)">
+    RTSS is required for Performance Overlay and Power Control to display the on-screen overlay. Download it from Guru3D and run the installer:
+
+    [https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html](https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html)
+
+    Make sure RTSS is running in the system tray before you launch Performance Overlay or Power Control for the first time.
+  </Step>
+
+  <Step title="Install ViGEmBus">
+    ViGEmBus provides the virtual gamepad driver that Steam Controller relies on to emulate an Xbox 360 controller. Download the latest release from GitHub and run the installer:
+
+    [https://github.com/ViGEm/ViGEmBus/releases](https://github.com/ViGEm/ViGEmBus/releases)
+
+    If you skip this step, Steam Controller will launch but controller input will not work.
+  </Step>
+
+  <Step title="Uninstall or disable conflicting software">
+    The following tools conflict with Steam Deck Tools, especially with Steam Controller:
+
+    - **SWICD** — uninstall before running Steam Controller
+    - **GlosSI** — uninstall before running Steam Controller
+    - **HidHide** — uninstall before running Steam Controller
+
+    <Warning>
+      Running Steam Controller alongside SWICD, GlosSI, or HidHide will cause controller input conflicts. Uninstall or fully disable them before launching Steam Controller.
+    </Warning>
+  </Step>
+
+  <Step title="Run the Steam Deck Tools installer">
+    Double-click `SteamDeckTools-<version>-setup.exe` and follow the prompts. The installer places all four applications on your system and creates Start Menu shortcuts for each.
+
+    After setup completes you can launch any of the four apps individually — they do not all need to run at the same time.
+  </Step>
+</Steps>
+
+<Note>
+  A portable `.zip` archive is also available on the releases page. The portable build does not include an installer, so you must manually install Microsoft Visual C++ Redistributable, RTSS, and ViGEmBus before the apps will start.
+</Note>
+
+## Next steps
+
+Once the apps are running, explore what each one does:
+
+<CardGroup cols={2}>
+  <Card title="Fan Control" icon="wind" href="/apps/fan-control">
+    Control your Steam Deck fan using the reimplemented SteamOS fan curve, EC default, or full-speed mode.
+  </Card>
+  <Card title="Performance Overlay" icon="chart-line" href="/apps/performance-overlay">
+    Display real-time FPS, CPU, GPU, battery, and APU power stats in an on-screen overlay.
+  </Card>
+  <Card title="Power Control" icon="bolt" href="/apps/power-control">
+    Adjust TDP, refresh rate, FPS limit, brightness, volume, and more from an in-game overlay.
+  </Card>
+  <Card title="Steam Controller" icon="gamepad" href="/apps/steam-controller">
+    Use your Steam Deck's built-in controller with any game, including non-Steam titles and Game Pass.
+  </Card>
+</CardGroup>

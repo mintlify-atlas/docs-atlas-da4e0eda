@@ -1,0 +1,111 @@
+---
+title: "Power Control: TDP, refresh rate, and more in-game"
+description: "Power Control provides an in-game OSD overlay to adjust TDP, refresh rate, FPS limit, SMT, brightness, volume, and fan mode without leaving your game."
+---
+
+Power Control gives you a quick-access overlay for tuning your Steam Deck's performance settings while you are in a game. You navigate it using the controller or a keyboard shortcut, adjusting everything from TDP and refresh rate to fan mode and battery charge limit without pausing or alt-tabbing. It can also display notifications when the OSD is not available.
+
+<Note>
+  The OSD overlay only works when an application is actively rendering graphics. If no game is running, Power Control falls back to Windows notification popups, which are always available regardless of what is on screen.
+</Note>
+
+## Configurable settings
+
+<CardGroup cols={2}>
+  <Card title="Volume">
+    System audio volume, controllable directly from the overlay or with the physical volume buttons.
+  </Card>
+  <Card title="Brightness">
+    Display brightness level.
+  </Card>
+  <Card title="Refresh Rate">
+    Switch between the refresh rates your display supports. Changing the refresh rate also updates the available FPS Limit values proportionally.
+  </Card>
+  <Card title="Resolution">
+    Change display resolution. Requires `EnableExperimentalFeatures` to be enabled in `appconfig`.
+  </Card>
+  <Card title="FPS Limit">
+    Cap the frame rate at one quarter, one half, or the full refresh rate, or turn the limit off. Requires Rivatuner Statistics Server with **Enable Framelimit** turned on in RTSS Setup.
+  </Card>
+  <Card title="TDP">
+    Set the Thermal Design Power limit for the AMD APU. See the [TDP presets](#tdp-presets) table for available values.
+  </Card>
+  <Card title="GPU Frequency">
+    Set a minimum GPU clock floor (Hard Min) to prevent the GPU from clocking down too aggressively. Presets: Default (200–1600 MHz), 400 MHz, 800 MHz, 1200 MHz, 1600 MHz. Requires kernel drivers.
+  </Card>
+  <Card title="CPU Frequency">
+    Set CPU clock speed range. Presets: Default (1400–3500 MHz), Power-Save (1400–1800 MHz), Balanced (2200–2800 MHz), Max (3000–3500 MHz). Requires kernel drivers.
+  </Card>
+  <Card title="SMT">
+    Enable or disable Simultaneous Multi-Threading for the foreground process. AMD's CPU cores each have two threads; disabling SMT restricts the process to one thread per core, which can reduce latency in some games.
+  </Card>
+  <Card title="GPU Scaling">
+    Control AMD GPU scaling mode (Off, Centered, Stretched, etc.). Automatically kills Radeon Software if it tries to revert the setting.
+  </Card>
+  <Card title="OSD / OSD Mode">
+    Toggle the Performance Overlay and cycle through its modes. Requires [Performance Overlay](/apps/performance-overlay) to be running.
+  </Card>
+  <Card title="Fan">
+    Change the Fan Control mode (Default, Silent, SteamOS, Max). Requires [Fan Control](/apps/fan-control) to be running.
+  </Card>
+  <Card title="Battery Charge Limit">
+    Cap battery charging at 70%, 80%, 90%, or 100% to reduce long-term battery wear. Supported on Steam Deck OLED and LCD models with `MaxBatteryCharge` support in the firmware.
+  </Card>
+</CardGroup>
+
+## How to access the overlay
+
+You can open and navigate the Power Control overlay in two ways:
+
+**Steam Deck controller**
+
+Hold the **Quick Access** button (**3 dots**), then press a direction on the **DPad**:
+
+| Input | Action |
+|---|---|
+| **3 dots** + **DPad Left** | Move to the previous setting |
+| **3 dots** + **DPad Right** | Move to the next setting |
+| **3 dots** + **DPad Up** | Increase the current setting's value |
+| **3 dots** + **DPad Down** | Decrease the current setting's value |
+
+**Keyboard**
+
+| Shortcut | Action |
+|---|---|
+| `Ctrl+Win+Numpad4` | Move to the previous setting (Left) |
+| `Ctrl+Win+Numpad6` | Move to the next setting (Right) |
+| `Ctrl+Win+Numpad8` | Increase value (Up) |
+| `Ctrl+Win+Numpad2` | Decrease value (Down) |
+
+## Additional shortcuts
+
+| Shortcut | Action |
+|---|---|
+| **Volume Up** / **Volume Down** buttons | Adjust system volume |
+| **3 dots** + **Volume Up** | Increase brightness |
+| **3 dots** + **Volume Down** | Decrease brightness |
+| **3 dots** + **L4** + **R4** + **L5** + **R5** | Reset TDP, Refresh Rate, and FPS Limit to their defaults |
+| **3 dots** + **L1** + **R1** | Reset current resolution (use this to recover from a black screen caused by an unsupported resolution) |
+
+## TDP presets
+
+The following TDP levels are available. Both Slow TDP and Fast TDP are set to the same value for each preset:
+
+| Preset | Slow TDP | Fast TDP |
+|---|---|---|
+| 3W | 3 W | 3 W |
+| 4W | 4 W | 4 W |
+| 5W | 5 W | 5 W |
+| 6W | 6 W | 6 W |
+| 7W | 7 W | 7 W |
+| 8W | 8 W | 8 W |
+| 9W | 9 W | 9 W |
+| 10W | 10 W | 10 W |
+| 12W | 12 W | 12 W |
+| 15W | 15 W | 15 W |
+
+The default TDP is **15W**. You can customize presets by editing the persisted options file that Power Control creates on first run.
+
+<Warning>
+  Changing TDP requires brief kernel-level hardware access. If you are playing a game protected by anti-cheat software, leave the game session before adjusting TDP. See the [Anti-Cheat](/anti-cheat) guide for details.
+</Warning>

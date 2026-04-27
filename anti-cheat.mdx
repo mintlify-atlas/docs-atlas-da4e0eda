@@ -1,0 +1,61 @@
+---
+title: "Anti-cheat and antivirus: safe settings for online play"
+description: "Steam Deck Tools uses kernel-level hardware access that can trigger anti-cheat software. Learn which settings are safe to use in online games."
+---
+
+Steam Deck Tools accesses hardware registers through `inpoutx64.dll`, a library that performs direct kernel memory manipulation to read and write to the Embedded Controller (EC) and APU. Because kernel-level access is a common technique used by cheats and malware, anti-cheat systems and antivirus software may flag this activity — and in online games this could result in a kick or a ban.
+
+<Warning>
+  If you play online games that use anti-cheat technology, disable all kernel-level features in Steam Deck Tools **before** launching the game. Failing to do so could result in suspension or a permanent ban from the game.
+</Warning>
+
+## How the opt-in works
+
+By default, Steam Deck Tools does **not** use any kernel-level features. When you change a setting that requires kernel access — such as switching Fan Control to **SteamOS** mode or enabling **OSD Kernel Drivers** in Performance Overlay — the app displays an **Anti-Cheat Protection** dialog before applying the change.
+
+The dialog gives you three options for how warnings are handled going forward:
+
+- **Always show Anti-Cheat warnings** — you are prompted every time a kernel feature is enabled
+- **Hide Anti-Cheat warnings for current session** — warnings are suppressed until you restart the app or resume from sleep
+- **Never show Anti-Cheat warnings** — warnings are permanently suppressed
+
+Choosing **Abort** in the dialog cancels the change and leaves kernel features disabled. The footnote in the dialog reads: *"This might result in kicking from the game or even be banned."*
+
+## Safe settings
+
+The following settings do not use kernel drivers. They are safe to use in online games:
+
+<AccordionGroup>
+  <Accordion title="Fan Control — safe setting">
+    Set the fan mode to **Default**. This hands fan management back to the Embedded Controller firmware and requires no kernel access.
+
+    **SteamOS**, **Silent**, and **Max** modes all require kernel drivers. Only **Default** is kernel-free.
+  </Accordion>
+
+  <Accordion title="Performance Overlay — safe setting">
+    Keep **OSD Kernel Drivers** set to **DISABLED**. The overlay will still display FPS, frame time, battery level, and basic stats that do not require kernel access.
+  </Accordion>
+
+  <Accordion title="Power Control — safe approach">
+    You can change TDP, CPU frequency, and GPU frequency safely **before** launching the game. Once you are in-game with anti-cheat running, avoid making further changes via Power Control.
+  </Accordion>
+
+  <Accordion title="Steam Controller — no impact">
+    Steam Controller does not use kernel drivers at all. There is no configuration change needed for online play.
+  </Accordion>
+</AccordionGroup>
+
+## Features that require kernel access
+
+Enabling kernel drivers unlocks additional hardware metrics and control. The table below shows what you lose by keeping kernel drivers disabled:
+
+| App | Feature lost without kernel drivers |
+|---|---|
+| **Fan Control** | SteamOS, Silent, and Max fan modes — only Default is available without kernel drivers |
+| **Performance Overlay** | CPU usage %, CPU MHz, GPU MHz, APU power (W) |
+| **Power Control** | Real-time TDP changes, CPU frequency changes, GPU frequency changes |
+| **Steam Controller** | No impact — kernel drivers not used |
+
+<Info>
+  Power Control's TDP and frequency settings still work if you apply them before launching a game. The risk arises from applying them while an anti-cheat system is actively scanning the process environment.
+</Info>
